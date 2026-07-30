@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><title>播出时间表配置</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#101014;color:#eee;font-family:"Microsoft YaHei",sans-serif;display:flex;gap:30px;padding:30px;min-height:100vh}
+.panel{width:420px;background:#19191f;border:1px solid #333;border-radius:18px;padding:24px;box-shadow:0 10px 40px #0008;height:max-content}
+h1{font-size:22px;margin:0 0 20px}label{display:block;color:#aaa;font-size:13px;margin:8px 0 6px}input{width:100%;padding:10px;border-radius:8px;border:1px solid #444;background:#101014;color:white}button{width:100%;padding:12px;border:0;border-radius:10px;background:#ffd166;font-weight:bold;margin-top:15px;cursor:pointer}.preview{flex:1;display:flex;align-items:center;justify-content:center;background:#0b0b0d;border-radius:18px;overflow:hidden;padding:24px;box-sizing:border-box}.frame{width:640px;height:360px;transform-origin:center;box-shadow:0 10px 40px #0008;flex-shrink:0}iframe{width:640px;height:360px;border:0;display:block}
+details{margin-top:14px;border:1px solid #333;border-radius:10px;padding:0;background:#151519;overflow:hidden}
+summary{cursor:pointer;padding:12px 14px;font-size:14px;color:#ddd;font-weight:bold;list-style:none;display:flex;align-items:center;justify-content:space-between}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"▾";transition:transform .2s;color:#888}
+details[open] summary::after{transform:rotate(180deg)}
+details .details-body{padding:4px 14px 14px}
+</style></head><body>
+<div class="panel"><h1>播出时间表配置</h1>
+<label>主播名</label><input id="name" value="若木相羊">
+<label>房间号</label><input id="room" value="9519725">
+<label>直播平台</label><input id="platform" value="B站">
+<label>开播时间</label><input id="time" value="21:00">
+<label>时间备注</label><input id="timeNote" value="可能会迟到 (｡･･｡)">
+<label>底部备注</label><input id="footerNote" value="具体排期以直播间公告为准">
+<label>周休日（数字，周一=1 ... 周日=7，多个用逗号分隔）</label><input id="rest" value="1">
+<label>内容分类（逗号分隔，"游戏回"开头自动绿色，其余紫色）</label><input id="tags" value="游戏回 · 不定期,其他内容回">
+
+<details>
+  <summary>颜色设置</summary>
+  <div class="details-body">
+    <label>背景颜色</label><input id="bg" value="#0a0a0a">
+    <label>主题色（名字/房间号/杂谈回）</label><input id="main" value="#ffd166">
+    <label>副标题颜色（播出时间表）</label><input id="subtitleColor" value="rgba(255,255,255,0.65)">
+    <label>播出周期标签颜色</label><input id="scheduleLabelColor" value="rgba(255,255,255,0.62)">
+    <label>排期数字颜色</label><input id="dayColor" value="#9ecbff">
+    <label>游戏回标签颜色</label><input id="gameColor" value="rgba(126,232,199,0.55)">
+    <label>其他内容回标签颜色</label><input id="otherColor" value="rgba(201,167,255,0.55)">
+  </div>
+</details>
+
+<button onclick="go()">确定并生成页面</button></div>
+<div class="preview"><div class="frame"><iframe id="preview" src="card/LiveShedule_Preview.html"></iframe></div></div>
+<script>
+const ids=['name','room','platform','time','timeNote','footerNote','rest','bg','main','subtitleColor','scheduleLabelColor','dayColor','gameColor','otherColor','tags'];
+function url(file){let u=new URL(file,location.href);ids.forEach(i=>u.searchParams.set(i,document.getElementById(i).value));return u}
+function go(){location.href=url('card/LiveShedule_EndCard.html')}
+ids.forEach(i=>document.getElementById(i).oninput=()=>preview.src=url('card/LiveShedule_Preview.html'));
+
+// 预览区弹性缩放：根据.preview可用空间自动计算缩放比例，保持640x360(16:9)不变形
+function resizeFrame(){
+  const box=document.querySelector('.preview');
+  const frame=document.querySelector('.frame');
+  const availW=box.clientWidth;
+  const availH=box.clientHeight;
+  const scale=Math.min(availW/640, availH/360);
+  frame.style.transform='scale('+scale+')';
+}
+window.addEventListener('resize', resizeFrame);
+resizeFrame();
+</script></body></html>
